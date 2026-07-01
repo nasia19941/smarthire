@@ -1,0 +1,24 @@
+spring.application.name=smarthire
+
+# PostgreSQL Connection
+spring.datasource.url=jdbc:postgresql://localhost:5432/smarthire
+spring.datasource.username=YOUR_DB_USER
+spring.datasource.password=YOUR_DB_PASSWORD
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# JPA / Hibernate
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.format_sql=true
+
+# Server port
+server.port=8080
+
+# JWT
+jwt.secret=YOUR_JWT_SECRET
+jwt.expiration=86400000
+
+# Gemini AI
+gemini.api.key=YOUR_GEMINI_API_KEY
+gemini.api.url=https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent
