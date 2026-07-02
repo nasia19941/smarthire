@@ -7,6 +7,7 @@ import com.nasia.smarthire.model.ApplicationStatus;
 import com.nasia.smarthire.service.ApplicationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class ApplicationController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('HR_MANAGER') or hasRole('ADMIN')")
     public List<ApplicationDTO> getAllApplications() {
         return applicationService.getAllApplications()
                 .stream()
@@ -49,6 +51,7 @@ public class ApplicationController {
     }
 
     @PutMapping("/{id}/status")
+    @PreAuthorize("hasRole('HR_MANAGER') or hasRole('ADMIN')")
     public ApplicationDTO updateStatus(@PathVariable Long id, @RequestBody ApplicationStatus status) {
         return mapper.toApplicationDTO(applicationService.updateStatus(id, status));
     }
