@@ -24,10 +24,13 @@ public class JobPosting {
     private JobStatus status;
     private String description;
     private String requirements;
+    private String location;
     private String workSchedule;
     @Enumerated(EnumType.STRING)
     private WorkType workType;
     private Long salary;
     private String benefits;
+
+
 
 }
