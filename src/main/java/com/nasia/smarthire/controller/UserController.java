@@ -21,6 +21,7 @@ public class UserController {
     private final SmartHireMapper mapper;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public UserDTO createUser(@RequestBody User user) {
         return mapper.toUserDTO(userService.createUser(user));
     }
