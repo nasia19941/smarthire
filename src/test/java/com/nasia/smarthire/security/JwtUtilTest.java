@@ -19,21 +19,21 @@ class JwtUtilTest {
 
     @Test
     void generateToken_ShouldReturnNonNullToken() {
-        String token = jwtUtil.generateToken("nasia@smarthire.com");
+        String token = jwtUtil.generateToken("nasia@smarthire.com", "CANDIDATE");
         assertNotNull(token);
     }
 
     @Test
     void extractUsername_ShouldReturnCorrectEmail() {
         String email = "nasia@smarthire.com";
-        String token = jwtUtil.generateToken(email);
+        String token = jwtUtil.generateToken(email, "CANDIDATE");
         String extracted = jwtUtil.extractUsername(token);
         assertEquals(email, extracted);
     }
 
     @Test
     void isTokenValid_ShouldReturnTrueForValidToken() {
-        String token = jwtUtil.generateToken("nasia@smarthire.com");
+        String token = jwtUtil.generateToken("nasia@smarthire.com", "CANDIDATE");
         assertTrue(jwtUtil.isTokenValid(token));
     }
 
