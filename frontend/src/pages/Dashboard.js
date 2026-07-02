@@ -1,7 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { getApplications, getMyApplications, getApplicationsByJob, getJobPostings, createJobPosting } from '../services/api';
+import api from '../services/api';
 
 function Dashboard({ userRole }) {
+const handleStatusUpdate = async (appId, newStatus) => {
+  try {
+    await api.put(`/api/application/${appId}/status`, newStatus, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+    // Refresh applications
+    const updatedApps = { ...jobApplications };
+    for (const jobId in updatedApps) {
+      updatedApps[jobId] = updatedApps[jobId].map(app =>
+        app.id === appId ? { ...app, applicationStatus: newStatus } : app
+      );
+    }
+    setJobApplications(updatedApps);
+  } catch (err) {
+    console.error('Error updating status:', err);
+  }
+};
   const [applications, setApplications] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -38,12 +56,10 @@ function Dashboard({ userRole }) {
         .catch(err => console.error(err))
         .finally(() => setLoading(false));
     } else {
-      // CANDIDATE: φόρτωσε μόνο δικές του αιτήσεις
       const userId = localStorage.getItem('userId') || 1;
       getMyApplications(userId)
         .then(res => setApplications(res.data))
         .catch(err => {
-          // fallback σε getApplications αν δεν δουλεύει
           getApplications()
             .then(r => setApplications(r.data))
             .catch(console.error);
@@ -313,13 +329,43 @@ function Dashboard({ userRole }) {
                                 </div>
                                 <div style={{ fontSize: '10px', color: '#64748b', fontWeight: '600' }}>AI SCORE</div>
                               </div>
-                              <span style={{
-                                background: sc.bg, color: sc.color,
-                                padding: '4px 10px', borderRadius: '20px',
-                                fontSize: '11px', fontWeight: '700'
-                              }}>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
+                                <div style={{ textAlign: 'center' }}>
+                                  <div style={{ fontSize: '22px', fontWeight: '800', color: scoreColor(app.aiScore) }}>
+                                    {app.aiScore}
+                                  </div>
+                                  <div style={{ fontSize: '10px', color: '#64748b', fontWeight: '600' }}>AI SCORE</div>
+                                </div>
+                                <span style={{
+                                  background: sc.bg, color: sc.color,
+                                  padding: '4px 10px', borderRadius: '20px',
+                                  fontSize: '11px', fontWeight: '700'
+                                }}>
+                                  {app.applicationStatus}
+                                </span>
+                                {app.applicationStatus === 'PENDING' && (
+                                  <div style={{ display: 'flex', gap: '6px' }}>
+                                    <button
+                                      onClick={() => handleStatusUpdate(app.id, 'ACCEPTED')}
+                                      style={{
+                                        background: '#dcfce7', color: '#16a34a',
+                                        padding: '4px 10px', borderRadius: '6px',
+                                        fontSize: '11px', fontWeight: '700', border: 'none'
+                                      }}
+                                    >✓ Accept</button>
+                                    <button
+                                      onClick={() => handleStatusUpdate(app.id, 'REJECTED')}
+                                      style={{
+                                        background: '#fee2e2', color: '#dc2626',
+                                        padding: '4px 10px', borderRadius: '6px',
+                                        fontSize: '11px', fontWeight: '700', border: 'none'
+                                      }}
+                                    >✕ Reject</button>
+                                  </div>
+                                )}
+                              </div>
                                 {app.applicationStatus}
-                              </span>
+                              )}
                             </div>
                           </div>
                         );
