@@ -1,5 +1,7 @@
 package com.nasia.smarthire.controller;
 
+import com.nasia.smarthire.dto.ApplicationDTO;
+import com.nasia.smarthire.mapper.SmartHireMapper;
 import com.nasia.smarthire.model.Application;
 import com.nasia.smarthire.model.ApplicationStatus;
 import com.nasia.smarthire.service.ApplicationService;
@@ -8,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/application")
@@ -15,30 +18,38 @@ import java.util.List;
 @Slf4j
 public class ApplicationController {
     private final ApplicationService applicationService;
+    private final SmartHireMapper mapper;
 
     @PostMapping
-    public Application create(@RequestBody Application application){
-        return applicationService.create(application);
-    }
-    @PutMapping("/{id}")
-    public Application update(@PathVariable Long id , @RequestBody Application application){
-        return applicationService.update(id , application);
-    }
-    @GetMapping("/{id}")
-    public Application getApplicationById(@PathVariable Long id){
-        return applicationService.getApplicationById(id);
-    }
-    @GetMapping
-    public List<Application> getAllApplications(){
-        return applicationService.getAllApplications();
-    }
-    @DeleteMapping("/{id}")
-    public void deleteApplication(@PathVariable Long id){
-        applicationService.deleteApplication(id);
-    }
-    @PutMapping("/{id}/status")
-    public Application updateStatus(@PathVariable Long id, @RequestBody ApplicationStatus status){
-        return applicationService.updateStatus(id,status);
+    public ApplicationDTO create(@RequestBody Application application) {
+        return mapper.toApplicationDTO(applicationService.create(application));
     }
 
+    @PutMapping("/{id}")
+    public ApplicationDTO update(@PathVariable Long id, @RequestBody Application application) {
+        return mapper.toApplicationDTO(applicationService.update(id, application));
+    }
+
+    @GetMapping("/{id}")
+    public ApplicationDTO getApplicationById(@PathVariable Long id) {
+        return mapper.toApplicationDTO(applicationService.getApplicationById(id));
+    }
+
+    @GetMapping
+    public List<ApplicationDTO> getAllApplications() {
+        return applicationService.getAllApplications()
+                .stream()
+                .map(mapper::toApplicationDTO)
+                .collect(Collectors.toList());
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteApplication(@PathVariable Long id) {
+        applicationService.deleteApplication(id);
+    }
+
+    @PutMapping("/{id}/status")
+    public ApplicationDTO updateStatus(@PathVariable Long id, @RequestBody ApplicationStatus status) {
+        return mapper.toApplicationDTO(applicationService.updateStatus(id, status));
+    }
 }

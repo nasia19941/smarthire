@@ -1,5 +1,7 @@
 package com.nasia.smarthire.controller;
 
+import com.nasia.smarthire.dto.UserDTO;
+import com.nasia.smarthire.mapper.SmartHireMapper;
 import com.nasia.smarthire.model.User;
 import com.nasia.smarthire.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -14,26 +17,33 @@ import java.util.List;
 @Slf4j
 public class UserController {
     private final UserService userService;
+    private final SmartHireMapper mapper;
 
     @PostMapping
-    public User createUser (@RequestBody User user){
-        return userService.createUser(user);
-    }
-    @GetMapping("/{id}")
-    public User getUserById (@PathVariable Long id){
-        return userService.getUserById(id);
-    }
-    @GetMapping
-    public List<User> getAllUsers(){
-        return userService.getAllUsers();
-    }
-    @PutMapping("/{id}")
-    public User updateUser (@RequestBody User user , @PathVariable Long id){
-        return userService.updateUser(id , user);
-    }
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id){
-        userService.deleteUser(id);
+    public UserDTO createUser(@RequestBody User user) {
+        return mapper.toUserDTO(userService.createUser(user));
     }
 
+    @GetMapping("/{id}")
+    public UserDTO getUserById(@PathVariable Long id) {
+        return mapper.toUserDTO(userService.getUserById(id));
+    }
+
+    @GetMapping
+    public List<UserDTO> getAllUsers() {
+        return userService.getAllUsers()
+                .stream()
+                .map(mapper::toUserDTO)
+                .collect(Collectors.toList());
+    }
+
+    @PutMapping("/{id}")
+    public UserDTO updateUser(@RequestBody User user, @PathVariable Long id) {
+        return mapper.toUserDTO(userService.updateUser(id, user));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+    }
 }
