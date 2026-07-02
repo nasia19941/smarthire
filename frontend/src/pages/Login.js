@@ -14,6 +14,9 @@ function Login({ onLogin }) {
     try {
       const response = await login(email, password);
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.userId);
+      localStorage.setItem('userEmail', response.data.email);
+      localStorage.setItem('userRole', response.data.role);
       onLogin();
     } catch (err) {
       setError('Invalid email or password');
