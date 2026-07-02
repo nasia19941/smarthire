@@ -1,5 +1,6 @@
 package com.nasia.smarthire.service.impl;
 
+import com.nasia.smarthire.exception.ResourceNotFoundException;
 import com.nasia.smarthire.model.Company;
 import com.nasia.smarthire.repository.CompanyRepository;
 import com.nasia.smarthire.service.CompanyService;
@@ -22,7 +23,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Company getCompanyById(Long id) {
         return companyRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Company not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Company not found with id: " + id));
     }
 
     @Override
@@ -33,7 +34,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Company updateCompany(Long id, Company company) {
         Company existingCompany = companyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Company not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Company not found with id: " + id));
 
         existingCompany.setCompanyName(company.getCompanyName());
         existingCompany.setWebsite(company.getWebsite());
