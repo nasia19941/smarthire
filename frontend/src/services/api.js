@@ -39,4 +39,21 @@ export const createApplication = (data) =>
 export const getApplications = () =>
   api.get('/api/application');
 
+export const getUserRole = () => {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.role;
+  } catch {
+    return null;
+  }
+};
+
+export const getMyApplications = (userId) =>
+  api.get(`/api/application/user/${userId}`);
+
+export const getApplicationsByJob = (jobId) =>
+  api.get(`/api/application/job/${jobId}`);
+
 export default api;

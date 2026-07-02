@@ -5,6 +5,7 @@ import com.nasia.smarthire.exception.ResourceNotFoundException;
 import com.nasia.smarthire.model.Application;
 import com.nasia.smarthire.model.ApplicationStatus;
 import com.nasia.smarthire.model.JobPosting;
+import com.nasia.smarthire.model.User;
 import com.nasia.smarthire.repository.ApplicationRepository;
 import com.nasia.smarthire.repository.JobPostingRepository;
 import com.nasia.smarthire.service.ApplicationService;
@@ -94,6 +95,19 @@ public class ApplicationServiceImpl implements ApplicationService {
         existingApplication.setApplicationStatus(status);
 
         return applicationRepository.save(existingApplication);
+    }
+    @Override
+    public List<Application> getApplicationsByUser(Long userId) {
+        User user = new User();
+        user.setId(userId);
+        return applicationRepository.findByUser(user);
+    }
+
+    @Override
+    public List<Application> getApplicationsByJobPosting(Long jobPostingId) {
+        JobPosting jobPosting = new JobPosting();
+        jobPosting.setId(jobPostingId);
+        return applicationRepository.findByJobPosting(jobPosting);
     }
 
 }

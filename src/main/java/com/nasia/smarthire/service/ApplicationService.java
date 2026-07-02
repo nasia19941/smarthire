@@ -12,5 +12,7 @@ public interface ApplicationService {
     List<Application> getAllApplications();
     void deleteApplication(Long id);
     Application updateStatus(Long id, ApplicationStatus application);
+    List<Application> getApplicationsByUser(Long userId);
+    List<Application> getApplicationsByJobPosting(Long jobPostingId);
 
 }

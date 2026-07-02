@@ -55,4 +55,21 @@ public class ApplicationController {
     public ApplicationDTO updateStatus(@PathVariable Long id, @RequestBody ApplicationStatus status) {
         return mapper.toApplicationDTO(applicationService.updateStatus(id, status));
     }
+
+    @GetMapping("/user/{userId}")
+    public List<ApplicationDTO> getApplicationsByUser(@PathVariable Long userId) {
+        return applicationService.getApplicationsByUser(userId)
+                .stream()
+                .map(mapper::toApplicationDTO)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/job/{jobId}")
+    @PreAuthorize("hasRole('HR_MANAGER') or hasRole('ADMIN')")
+    public List<ApplicationDTO> getApplicationsByJob(@PathVariable Long jobId) {
+        return applicationService.getApplicationsByJobPosting(jobId)
+                .stream()
+                .map(mapper::toApplicationDTO)
+                .collect(Collectors.toList());
+    }
 }

@@ -3,6 +3,7 @@ package com.nasia.smarthire.controller;
 import com.nasia.smarthire.dto.AuthResponse;
 import com.nasia.smarthire.dto.LoginRequest;
 import com.nasia.smarthire.dto.RegisterRequest;
+import com.nasia.smarthire.model.Role;
 import com.nasia.smarthire.model.User;
 import com.nasia.smarthire.repository.UserRepository;
 import com.nasia.smarthire.security.JwtUtil;
@@ -11,7 +12,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import com.nasia.smarthire.model.Role;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -34,7 +34,7 @@ public class AuthController {
 
         userRepository.save(user);
 
-        String token = jwtUtil.generateToken(user.getEmail());
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
         return new AuthResponse(token);
     }
 
@@ -47,7 +47,10 @@ public class AuthController {
                 )
         );
 
-        String token = jwtUtil.generateToken(request.getEmail());
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String token = jwtUtil.generateToken(request.getEmail(), user.getRole().name());
         return new AuthResponse(token);
     }
 }

@@ -5,46 +5,103 @@ function Login({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
     try {
       const response = await login(email, password);
       localStorage.setItem('token', response.data.token);
       onLogin();
     } catch (err) {
       setError('Invalid email or password');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '100px auto', padding: '20px' }}>
-      <h2>SmartHire 🚀</h2>
-      <h3>Login</h3>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={{ display: 'block', width: '100%', marginBottom: '10px', padding: '8px' }}
-          />
+    <div style={{
+      minHeight: 'calc(100vh - 64px)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'linear-gradient(135deg, #f1f5f9 0%, #e0e7ff 100%)',
+      padding: '20px'
+    }}>
+      <div style={{
+        background: 'white',
+        borderRadius: '20px',
+        padding: '48px',
+        width: '100%',
+        maxWidth: '420px',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.1)'
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div style={{ fontSize: '48px', marginBottom: '12px' }}>🚀</div>
+          <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b' }}>
+            Smart<span style={{ color: '#2563eb' }}>Hire</span>
+          </h1>
+          <p style={{ color: '#64748b', marginTop: '8px', fontSize: '14px' }}>
+            AI-powered recruitment platform
+          </p>
         </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{ display: 'block', width: '100%', marginBottom: '10px', padding: '8px' }}
-          />
-        </div>
-        <button type="submit" style={{ padding: '10px 20px' }}>
-          Login
-        </button>
-      </form>
+
+        {error && (
+          <div style={{
+            background: '#fef2f2',
+            border: '1px solid #fecaca',
+            color: '#dc2626',
+            padding: '12px 16px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            fontSize: '14px'
+          }}>
+            ⚠️ {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: '20px' }}>
+            <label>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
+              required
+            />
+          </div>
+          <div style={{ marginBottom: '28px' }}>
+            <label>Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              width: '100%',
+              background: loading ? '#93c5fd' : 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+              color: 'white',
+              padding: '14px',
+              fontSize: '16px',
+              fontWeight: '700',
+              borderRadius: '10px',
+              boxShadow: '0 4px 12px rgba(37,99,235,0.3)'
+            }}
+          >
+            {loading ? '⏳ Signing in...' : '→ Sign In'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
