@@ -6,6 +6,7 @@ import com.nasia.smarthire.model.JobPosting;
 import com.nasia.smarthire.service.JobPostingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class JobPostingController {
     private final SmartHireMapper mapper;
 
     @PostMapping
+    @PreAuthorize("hasRole('HR_MANAGER') or hasRole('ADMIN')")
     public JobPostingDTO create(@RequestBody JobPosting jobPosting) {
         return mapper.toJobPostingDTO(jobPostingService.create(jobPosting));
     }
@@ -38,11 +40,13 @@ public class JobPostingController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('HR_MANAGER') or hasRole('ADMIN')")
     public JobPostingDTO update(@PathVariable Long id, @RequestBody JobPosting jobPosting) {
         return mapper.toJobPostingDTO(jobPostingService.update(id, jobPosting));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('HR_MANAGER') or hasRole('ADMIN')")
     public void delete(@PathVariable Long id) {
         jobPostingService.deleteJobPosting(id);
     }
