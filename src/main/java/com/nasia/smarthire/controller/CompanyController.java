@@ -6,6 +6,7 @@ import com.nasia.smarthire.model.Company;
 import com.nasia.smarthire.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,6 +44,7 @@ public class CompanyController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteCompany(@PathVariable Long id) {
         companyService.deleteCompany(id);
     }
