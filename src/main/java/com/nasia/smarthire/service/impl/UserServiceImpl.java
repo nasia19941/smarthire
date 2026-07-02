@@ -1,5 +1,6 @@
 package com.nasia.smarthire.service.impl;
 
+import com.nasia.smarthire.exception.ResourceNotFoundException;
 import com.nasia.smarthire.model.User;
 import com.nasia.smarthire.repository.UserRepository;
 import com.nasia.smarthire.service.UserService;
@@ -23,7 +24,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
     @Override
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(Long id, User user) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
         existingUser.setUsername(user.getUsername());
         existingUser.setPassword(user.getPassword());

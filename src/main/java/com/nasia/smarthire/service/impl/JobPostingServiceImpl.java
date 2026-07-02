@@ -1,5 +1,6 @@
 package com.nasia.smarthire.service.impl;
 
+import com.nasia.smarthire.exception.ResourceNotFoundException;
 import com.nasia.smarthire.model.JobPosting;
 import com.nasia.smarthire.repository.JobPostingRepository;
 import com.nasia.smarthire.service.JobPostingService;
@@ -21,7 +22,7 @@ public class JobPostingServiceImpl implements JobPostingService {
     @Override
     public JobPosting getJobPostingById(Long id) {
         return jobPostingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("JobPosting not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("JobPosting not found with id: " + id));
     }
 
     @Override
@@ -32,7 +33,7 @@ public class JobPostingServiceImpl implements JobPostingService {
     @Override
     public JobPosting update(Long id, JobPosting jobPosting) {
         JobPosting existingJobPosting = jobPostingRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("JobPosting not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("JobPosting not found with id: " + id));
 
         existingJobPosting.setTitle(jobPosting.getTitle());
         existingJobPosting.setDescription(jobPosting.getDescription());

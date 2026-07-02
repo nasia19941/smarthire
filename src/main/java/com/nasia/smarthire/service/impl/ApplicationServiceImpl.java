@@ -1,6 +1,7 @@
 package com.nasia.smarthire.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nasia.smarthire.exception.ResourceNotFoundException;
 import com.nasia.smarthire.model.Application;
 import com.nasia.smarthire.model.ApplicationStatus;
 import com.nasia.smarthire.model.JobPosting;
@@ -29,7 +30,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         // Φόρτωσε το πλήρες JobPosting από τη βάση
         JobPosting jobPosting = jobPostingRepository.findById(
                         application.getJobPosting().getId())
-                .orElseThrow(() -> new RuntimeException("JobPosting not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("JobPosting not found"));
 
         String requirements = jobPosting.getRequirements();
         String cvText = application.getCvUrl();
@@ -58,7 +59,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public Application update(Long id, Application application) {
         Application existingApplication = applicationRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Application not found with id: " + id));
 
         existingApplication.setSubmittedAt(application.getSubmittedAt());
         existingApplication.setAiScore(application.getAiScore());
@@ -72,7 +73,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public Application getApplicationById(Long id) {
         return applicationRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("application not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Application not found with id: " + id));
     }
 
     @Override
@@ -88,7 +89,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public Application updateStatus(Long id, ApplicationStatus status) {
         Application existingApplication = applicationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Application not found with id: " + id));
 
         existingApplication.setApplicationStatus(status);
 
