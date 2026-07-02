@@ -5,6 +5,7 @@ import JobListings from './pages/JobListings';
 import Dashboard from './pages/Dashboard';
 import './App.css';
 import { getUserRole } from './services/api';
+import Register from './pages/Register';
 
 function App() {
    const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
@@ -83,6 +84,7 @@ function App() {
         <Route path="/jobs" element={isLoggedIn ? <JobListings userRole={userRole} /> : <Navigate to="/login" />} />
         <Route path="/dashboard" element={isLoggedIn ? <Dashboard userRole={userRole} /> : <Navigate to="/login" />} />
         <Route path="/" element={<Navigate to="/login" />} />
+       <Route path="/register" element={isLoggedIn ? <Navigate to="/jobs" /> : <Register onLogin={handleLogin} />} />
       </Routes>
     </Router>
   );

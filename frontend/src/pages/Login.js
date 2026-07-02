@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { login } from '../services/api';
+import { Link } from 'react-router-dom';
 
 function Login({ onLogin }) {
   const [email, setEmail] = useState('');
@@ -87,6 +88,10 @@ function Login({ onLogin }) {
               required
             />
           </div>
+          <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '14px', color: '#64748b' }}>
+            Don't have an account?{' '}
+            <Link to="/register" style={{ color: '#2563eb', fontWeight: '600' }}>Register</Link>
+          </p>
           <button
             type="submit"
             disabled={loading}
